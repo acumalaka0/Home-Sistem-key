@@ -166,7 +166,7 @@
                         </button>
 
                         <div id="userProfile" class="hidden flex items-center gap-2">
-                            <img id="userAvatar" src="" alt="Avatar" class="w-7 h-7 rounded-full border border-neonRed shadow-[0_0_8px_rgba(255,0,51,0.6)]">
+                            <img id="userAvatar" src="" alt="Avatar" referrerpolicy="no-referrer" class="w-7 h-7 rounded-full border border-neonRed shadow-[0_0_8px_rgba(255,0,51,0.6)] object-cover">
                             <button type="button" id="logoutBtn" title="Keluar" class="flex items-center justify-center p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-neonRed border border-zinc-700 hover:border-neonRed transition-all cursor-pointer">
                                 <iconify-icon icon="solar:logout-3-bold" width="14"></iconify-icon>
                             </button>
@@ -194,7 +194,7 @@
             </div>
             
             <!-- Turnstile Container -->
-            <div class="flex justify-center mt-10 bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm mx-auto">
+            <div id="turnstileBox" class="flex justify-center mt-10 bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm mx-auto">
                 <div class="text-center">
                     <p class="text-[10px] font-bold text-gray-500 uppercase mb-3">Verifikasi Keamanan AWIMEDAN</p>
                     <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAACzDxOSs8R4DwJlY"></div>
@@ -349,13 +349,12 @@
         });
     </script>
 
-    <!-- Integrasi Auth melalui Cloudflare Worker & Firebase Redirect -->
+    <!-- Integrasi Auth melalui Cloudflare Worker & Firebase Popup -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getAuth, 
-            signInWithRedirect, 
-            getRedirectResult, 
+            signInWithPopup, 
             GoogleAuthProvider, 
             signOut, 
             onAuthStateChanged 
@@ -380,25 +379,14 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const userProfile = document.getElementById('userProfile');
         const userAvatar = document.getElementById('userAvatar');
+        const turnstileBox = document.getElementById('turnstileBox');
 
         function resetLoginBtn() {
             loginBtn.disabled = false;
             loginBtn.innerHTML = '<iconify-icon icon="logos:google-icon" width="14"></iconify-icon><span>Masuk</span>';
         }
 
-        // 1. Memproses hasil redirect dari Google
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result && result.user) {
-                    console.log("Login sukses dari redirect:", result.user);
-                }
-            })
-            .catch((error) => {
-                console.error("Gagal mendapatkan hasil redirect:", error);
-                resetLoginBtn();
-            });
-
-        // 2. Event Listener Tombol Login
+        // 1. Event Listener Tombol Login (Menggunakan Popup agar halaman tidak refresh)
         loginBtn.addEventListener('click', async () => {
             try {
                 let turnstileToken = '';
@@ -423,7 +411,8 @@
                 const responseData = await workerCheck.json().catch(() => ({}));
 
                 if (workerCheck.ok && responseData.success !== false) {
-                    await signInWithRedirect(auth, provider);
+                    // Menggunakan Popup agar persisten & sesi Auth tidak hilang
+                    await signInWithPopup(auth, provider);
                 } else {
                     alert("Verifikasi keamanan via Cloudflare Worker gagal: " + (responseData.message || responseData['error-codes'] || "Token tidak valid"));
                     if (window.turnstile) turnstile.reset('#turnstileWidget');
@@ -431,13 +420,15 @@
                 }
             } catch (error) {
                 console.error("Gagal Login:", error);
-                alert("Gagal masuk: " + error.message);
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    alert("Gagal masuk: " + error.message);
+                }
                 if (window.turnstile) turnstile.reset('#turnstileWidget');
                 resetLoginBtn();
             }
         });
 
-        // 3. Event Listener Tombol Logout
+        // 2. Event Listener Tombol Logout
         logoutBtn.addEventListener('click', async () => {
             try {
                 await signOut(auth);
@@ -446,16 +437,21 @@
             }
         });
 
-        // 4. Observer Status Autentikasi
+        // 3. Observer Status Autentikasi Real-time
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginBtn.classList.add('hidden');
                 userProfile.classList.remove('hidden');
-                userAvatar.src = user.photoURL || 'https://via.placeholder.com/150';
+                if (turnstileBox) turnstileBox.classList.add('hidden');
+                
+                // Gunakan gambar default jika photoURL kosong
+                userAvatar.src = user.photoURL || 'https://lh3.googleusercontent.com/a/default-user';
                 userAvatar.title = user.displayName || 'Pengguna';
             } else {
                 loginBtn.classList.remove('hidden');
                 userProfile.classList.add('hidden');
+                if (turnstileBox) turnstileBox.classList.remove('hidden');
+                
                 userAvatar.src = '';
                 resetLoginBtn();
             }
