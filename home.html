@@ -160,14 +160,14 @@
                     </button>
 
                     <div id="authContainer">
-                        <button id="loginBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neonRed hover:bg-neonRed-hover text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(255,0,51,0.4)] hover:shadow-[0_0_20px_rgba(255,0,51,0.6)] cursor-pointer">
+                        <button type="button" id="loginBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neonRed hover:bg-neonRed-hover text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(255,0,51,0.4)] hover:shadow-[0_0_20px_rgba(255,0,51,0.6)] cursor-pointer">
                             <iconify-icon icon="logos:google-icon" width="14"></iconify-icon>
                             <span>Masuk</span>
                         </button>
 
                         <div id="userProfile" class="hidden flex items-center gap-2">
                             <img id="userAvatar" src="" alt="Avatar" class="w-7 h-7 rounded-full border border-neonRed shadow-[0_0_8px_rgba(255,0,51,0.6)]">
-                            <button id="logoutBtn" title="Keluar" class="flex items-center justify-center p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-neonRed border border-zinc-700 hover:border-neonRed transition-all cursor-pointer">
+                            <button type="button" id="logoutBtn" title="Keluar" class="flex items-center justify-center p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-neonRed border border-zinc-700 hover:border-neonRed transition-all cursor-pointer">
                                 <iconify-icon icon="solar:logout-3-bold" width="14"></iconify-icon>
                             </button>
                         </div>
@@ -349,12 +349,13 @@
         });
     </script>
 
-    <!-- Integrasi Auth melalui Cloudflare Worker -->
+    <!-- Integrasi Auth melalui Cloudflare Worker & Firebase Redirect -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getAuth, 
-            signInWithPopup, 
+            signInWithRedirect, 
+            getRedirectResult,
             GoogleAuthProvider, 
             signOut, 
             onAuthStateChanged 
@@ -380,6 +381,11 @@
         const userProfile = document.getElementById('userProfile');
         const userAvatar = document.getElementById('userAvatar');
 
+        // Menangani hasil redirect setelah login Google selesai
+        getRedirectResult(auth).catch((error) => {
+            console.error("Error redirect login:", error);
+        });
+
         loginBtn.addEventListener('click', async () => {
             try {
                 let turnstileToken = '';
@@ -392,6 +398,10 @@
                     return;
                 }
 
+                // Ubah teks tombol untuk memberikan feedback visual
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<span>Memproses...</span>';
+
                 const workerCheck = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -401,16 +411,20 @@
                 const responseData = await workerCheck.json().catch(() => ({}));
 
                 if (workerCheck.ok && responseData.success !== false) {
-                    await signInWithPopup(auth, provider);
-                    if (window.turnstile) turnstile.reset('#turnstileWidget');
+                    // Gunakan Redirect agar tidak terblokir oleh pop-up blocker di mobile browser
+                    await signInWithRedirect(auth, provider);
                 } else {
                     alert("Verifikasi keamanan via Cloudflare Worker gagal: " + (responseData.message || responseData['error-codes'] || "Token tidak valid"));
                     if (window.turnstile) turnstile.reset('#turnstileWidget');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<iconify-icon icon="logos:google-icon" width="14"></iconify-icon><span>Masuk</span>';
                 }
             } catch (error) {
                 console.error("Gagal Login:", error);
                 alert("Gagal masuk: " + error.message);
                 if (window.turnstile) turnstile.reset('#turnstileWidget');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<iconify-icon icon="logos:google-icon" width="14"></iconify-icon><span>Masuk</span>';
             }
         });
 
