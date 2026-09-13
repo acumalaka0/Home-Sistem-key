@@ -192,13 +192,12 @@
                     Panel Key, AWIMEDAN PANEL, AWIMEDAN STORE, Programmer, Lua, C
                 </p>
             </div>
-    <!-- Turnstile Container Invisible -->
-    <!-- UBAH Site Key di bawah ini dengan Site Key Turnstile Anda (bukan Secret Key) -->
-    <div class="flex justify-center mt-10 bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm mx-auto">
-                    <div class="text-center">
-                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-3">Verifikasi Keamanan AWIMEDAN</p>
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAACzDxOSs8R4DwJlY"></div>
-                    </div>
+            
+            <!-- Turnstile Container -->
+            <div class="flex justify-center mt-10 bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm mx-auto">
+                <div class="text-center">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-3">Verifikasi Keamanan AWIMEDAN</p>
+                    <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAACzDxOSs8R4DwJlY"></div>
                 </div>
             </div>
 
@@ -296,7 +295,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> <!-- Penutup max-w-4xl -->
     </main>
 
     <footer class="border-t border-blackModern-borderLight dark:border-blackModern-border bg-white dark:bg-blackModern-bg py-6 theme-transition relative z-10">
@@ -361,10 +360,8 @@
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // URL Cloudflare Worker Anda
         const WORKER_URL = "https://keysistemlogin.angkawijaya2603.workers.dev/";
 
-        // Konfigurasi Firebase Client (Beserta API Key publik agar Firebase SDK bekerja)
         const firebaseConfig = {
             apiKey: "AIzaSyCNZokAKl6TVKWMOc51SCSRKZGqoG77uFI", 
             authDomain: "cpmapikey.firebaseapp.com",
@@ -385,34 +382,30 @@
 
         loginBtn.addEventListener('click', async () => {
             try {
-                // Ambil token Turnstile dari widget Cloudflare
-                let turnstileToken = turnstile.getResponse();
-
-                // Jika token belum siap, eksekusi Turnstile
-                if (!turnstileToken) {
-                    turnstileToken = await turnstile.execute('#turnstileWidget');
+                let turnstileToken = '';
+                if (window.turnstile) {
+                    turnstileToken = turnstile.getResponse('#turnstileWidget');
                 }
 
                 if (!turnstileToken) {
-                    alert("Verifikasi captcha gagal. Silakan coba lagi.");
+                    alert("Silakan selesaikan verifikasi Turnstile terlebih dahulu.");
                     return;
                 }
 
-                // Jalankan validasi keamanan ke Cloudflare Worker
                 const workerCheck = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ turnstileToken })
                 });
 
-                if (workerCheck.ok) {
-                    // Jika Worker memberikan lampu hijau, buka login Google Firebase
+                const responseData = await workerCheck.json().catch(() => ({}));
+
+                if (workerCheck.ok && responseData.success !== false) {
                     await signInWithPopup(auth, provider);
-                    turnstile.reset('#turnstileWidget');
+                    if (window.turnstile) turnstile.reset('#turnstileWidget');
                 } else {
-                    const errorData = await workerCheck.json().catch(() => ({}));
-                    alert("Verifikasi keamanan via Cloudflare Worker gagal: " + (errorData.message || "Token tidak valid"));
-                    turnstile.reset('#turnstileWidget');
+                    alert("Verifikasi keamanan via Cloudflare Worker gagal: " + (responseData.message || responseData['error-codes'] || "Token tidak valid"));
+                    if (window.turnstile) turnstile.reset('#turnstileWidget');
                 }
             } catch (error) {
                 console.error("Gagal Login:", error);
