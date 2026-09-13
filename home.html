@@ -355,7 +355,7 @@
         import { 
             getAuth, 
             signInWithRedirect, 
-            getRedirectResult,
+            getRedirectResult, 
             GoogleAuthProvider, 
             signOut, 
             onAuthStateChanged 
@@ -381,11 +381,24 @@
         const userProfile = document.getElementById('userProfile');
         const userAvatar = document.getElementById('userAvatar');
 
-        // Menangani hasil redirect setelah login Google selesai
-        getRedirectResult(auth).catch((error) => {
-            console.error("Error redirect login:", error);
-        });
+        function resetLoginBtn() {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<iconify-icon icon="logos:google-icon" width="14"></iconify-icon><span>Masuk</span>';
+        }
 
+        // 1. Memproses hasil redirect dari Google
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result && result.user) {
+                    console.log("Login sukses dari redirect:", result.user);
+                }
+            })
+            .catch((error) => {
+                console.error("Gagal mendapatkan hasil redirect:", error);
+                resetLoginBtn();
+            });
+
+        // 2. Event Listener Tombol Login
         loginBtn.addEventListener('click', async () => {
             try {
                 let turnstileToken = '';
@@ -398,7 +411,6 @@
                     return;
                 }
 
-                // Ubah teks tombol untuk memberikan feedback visual
                 loginBtn.disabled = true;
                 loginBtn.innerHTML = '<span>Memproses...</span>';
 
@@ -411,23 +423,21 @@
                 const responseData = await workerCheck.json().catch(() => ({}));
 
                 if (workerCheck.ok && responseData.success !== false) {
-                    // Gunakan Redirect agar tidak terblokir oleh pop-up blocker di mobile browser
                     await signInWithRedirect(auth, provider);
                 } else {
                     alert("Verifikasi keamanan via Cloudflare Worker gagal: " + (responseData.message || responseData['error-codes'] || "Token tidak valid"));
                     if (window.turnstile) turnstile.reset('#turnstileWidget');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<iconify-icon icon="logos:google-icon" width="14"></iconify-icon><span>Masuk</span>';
+                    resetLoginBtn();
                 }
             } catch (error) {
                 console.error("Gagal Login:", error);
                 alert("Gagal masuk: " + error.message);
                 if (window.turnstile) turnstile.reset('#turnstileWidget');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<iconify-icon icon="logos:google-icon" width="14"></iconify-icon><span>Masuk</span>';
+                resetLoginBtn();
             }
         });
 
+        // 3. Event Listener Tombol Logout
         logoutBtn.addEventListener('click', async () => {
             try {
                 await signOut(auth);
@@ -436,6 +446,7 @@
             }
         });
 
+        // 4. Observer Status Autentikasi
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginBtn.classList.add('hidden');
@@ -446,6 +457,7 @@
                 loginBtn.classList.remove('hidden');
                 userProfile.classList.add('hidden');
                 userAvatar.src = '';
+                resetLoginBtn();
             }
         });
     </script>
