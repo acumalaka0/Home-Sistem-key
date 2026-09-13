@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami - AWIMEDAN PANEL</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <!-- Cloudflare Turnstile API -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
+    <!-- Instant theme apply (no flash) -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('site-theme') || 'dark';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.removeAttribute('data-theme');
+            }
+        })();
+    </script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neonRed: {
+                            DEFAULT: '#ff0033',
+                            hover: '#cc0029',
+                            glow: 'rgba(255, 0, 51, 0.4)',
+                            subtle: 'rgba(255, 0, 51, 0.15)'
+                        },
+                        neonWhite: {
+                            DEFAULT: '#ffffff',
+                            glow: 'rgba(255, 255, 255, 0.6)'
+                        },
+                        blackModern: {
+                            bg: '#050505',
+                            card: 'rgba(18, 18, 20, 0.75)',
+                            border: 'rgba(255, 0, 51, 0.2)',
+                            cardLight: 'rgba(255, 255, 255, 0.9)',
+                            borderLight: 'rgba(255, 0, 51, 0.15)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .bg-grid {
+            background-size: 32px 32px;
+            background-image: linear-gradient(to right, rgba(255, 0, 51, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
+        }
+        .dark .bg-grid {
+            background-image: linear-gradient(to right, rgba(255, 0, 51, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 0, 51, 0.05) 1px, transparent 1px);
+        }
+        
+        .theme-transition {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        @keyframes float-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 40px) scale(1.15); }
+        }
+        @keyframes float-2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-60px, -40px) scale(1.15); }
+        }
+        .glow-orb-1 {
+            animation: float-1 12s infinite alternate ease-in-out;
+        }
+        .glow-orb-2 {
+            animation: float-2 15s infinite alternate ease-in-out;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 51, 0.2);
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 51, 0.4);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff0033;
+            box-shadow: 0 0 10px #ff0033;
+        }
+
+        .neon-text-red {
+            text-shadow: 0 0 10px rgba(255, 0, 51, 0.7), 0 0 20px rgba(255, 0, 51, 0.5);
+        }
+        .neon-text-white {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+        .neon-box-red {
+            box-shadow: 0 0 15px rgba(255, 0, 51, 0.3), inset 0 0 15px rgba(255, 0, 51, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-blackModern-bg text-zinc-900 dark:text-zinc-200 antialiased min-h-screen flex flex-col relative theme-transition overflow-x-hidden">
+
+    <div class="fixed top-[10%] left-[15%] w-[600px] h-[600px] rounded-full bg-neonRed/20 blur-[140px] pointer-events-none z-0 glow-orb-1"></div>
+    <div class="fixed bottom-[10%] right-[15%] w-[550px] h-[550px] rounded-full bg-neonRed/15 blur-[140px] pointer-events-none z-0 glow-orb-2"></div>
+    <div class="fixed top-[45%] left-[45%] w-[400px] h-[400px] rounded-full bg-white/10 dark:bg-white/5 blur-[120px] pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-blackModern-borderLight dark:border-blackModern-border backdrop-blur-md bg-white/80 dark:bg-blackModern-bg/85 theme-transition">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 relative">
+            <div class="flex items-center justify-between h-14">
+                <a href="/" class="flex items-center gap-2 group">
+                    <iconify-icon icon="solar:bolt-bold" class="text-neonRed text-xl group-hover:scale-105 transition-transform duration-200 drop-shadow-[0_0_8px_rgba(255,0,51,0.8)]"></iconify-icon>
+                    <span class="text-zinc-950 dark:text-white font-bold tracking-tight text-sm neon-text-white">AWIMEDAN PANEL</span>
+                </a>
+
+                <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-6 text-xs font-semibold">
+                    <a href="/" class="text-neonRed dark:text-white transition-colors py-1 border-b-2 border-neonRed drop-shadow-[0_0_8px_rgba(255,0,51,0.5)]">Beranda</a>
+                    <a href="https://keysistemgame.netlify.app" class="text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white transition-colors py-1">Unduh</a>
+                    <a href="https://awimedanstoreid.netlify.app" class="text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white transition-colors py-1">Script</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                        </span>
+                        <span>SISTEM: ONLINE</span>
+                    </div>
+
+                    <button onclick="toggleTheme()" class="flex items-center justify-center w-8 h-8 rounded-lg border border-blackModern-borderLight dark:border-blackModern-border bg-white dark:bg-black/60 text-zinc-600 dark:text-zinc-400 hover:text-neonRed dark:hover:text-neonRed transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,51,0.1)]" id="themeToggle">
+                        <iconify-icon icon="solar:moon-bold" width="16" id="icon-moon"></iconify-icon>
+                        <iconify-icon icon="solar:sun-bold" width="16" id="icon-sun" style="display:none"></iconify-icon>
+                    </button>
+
+                    <div id="authContainer">
+                        <button id="loginBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neonRed hover:bg-neonRed-hover text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(255,0,51,0.4)] hover:shadow-[0_0_20px_rgba(255,0,51,0.6)] cursor-pointer">
+                            <iconify-icon icon="logos:google-icon" width="14"></iconify-icon>
+                            <span>Masuk</span>
+                        </button>
+
+                        <div id="userProfile" class="hidden flex items-center gap-2">
+                            <img id="userAvatar" src="" alt="Avatar" class="w-7 h-7 rounded-full border border-neonRed shadow-[0_0_8px_rgba(255,0,51,0.6)]">
+                            <button id="logoutBtn" title="Keluar" class="flex items-center justify-center p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-neonRed border border-zinc-700 hover:border-neonRed transition-all cursor-pointer">
+                                <iconify-icon icon="solar:logout-3-bold" width="14"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center bg-grid py-12 px-4 sm:px-6 relative z-10">
+        <div class="max-w-4xl w-full text-center space-y-12">
+            <div class="space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-black/80 border border-blackModern-borderLight dark:border-blackModern-border text-zinc-600 dark:text-zinc-300 text-xs font-semibold shadow-[0_0_10px_rgba(255,0,51,0.15)]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-neonRed animate-pulse shadow-[0_0_8px_#ff0033]"></span>
+                    Layanan Pelanggan 24/7
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-950 dark:text-white leading-tight">
+                    AWIMEDAN <span class="bg-gradient-to-r from-neonRed via-red-500 to-white bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,0,51,0.4)]">SISTEM VIP</span>
+                </h1>
+                <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                    Panel Key, AWIMEDAN PANEL, AWIMEDAN STORE, Programmer, Lua, C
+                </p>
+            </div>
+    <!-- Turnstile Container Invisible -->
+    <!-- UBAH Site Key di bawah ini dengan Site Key Turnstile Anda (bukan Secret Key) -->
+    <div class="flex justify-center mt-10 bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm mx-auto">
+                    <div class="text-center">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-3">Verifikasi Keamanan AWIMEDAN</p>
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAACzDxOSs8R4DwJlY"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                <a href="https://keysistemgame.netlify.app" class="group flex flex-col justify-between p-6 rounded-2xl border border-blackModern-borderLight dark:border-blackModern-border bg-blackModern-cardLight dark:bg-blackModern-card backdrop-blur-md hover:border-neonRed dark:hover:border-neonRed hover:shadow-[0_0_25px_rgba(255,0,51,0.25)] transition-all duration-300 text-left">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-neonRed/10 border border-neonRed/20 flex items-center justify-center text-neonRed shadow-[0_0_10px_rgba(255,0,51,0.2)]">
+                                <iconify-icon icon="solar:download-bold" class="text-lg"></iconify-icon>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-neonRed transition-colors">Pustaka Unduhan</h2>
+                                <p class="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">/pustaka_unduhan</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg border border-blackModern-borderLight dark:border-zinc-800/80 bg-white/50 dark:bg-black/50 space-y-2">
+                            <div class="flex items-center justify-between text-[10px] pb-1 border-b border-zinc-200 dark:border-zinc-800">
+                                <span class="font-mono text-zinc-500 dark:text-zinc-400">Nama Perangkat Lunak</span>
+                                <span class="font-mono text-zinc-500 dark:text-zinc-400">Keamanan</span>
+                            </div>
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-zinc-800 dark:text-zinc-200">AWIMEDAN Engine</span>
+                                <span class="text-emerald-500 font-bold text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">Aman</span>
+                            </div>
+                            <div class="flex items-center justify-between text-[9px] text-zinc-500 dark:text-zinc-400 pt-1">
+                                <span>Bandwidth: Tanpa Batas</span>
+                                <span>Ping: ~24ms</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs font-bold text-neonRed mt-6 group-hover:gap-2.5 transition-all drop-shadow-[0_0_8px_rgba(255,0,51,0.4)]">
+                        <span>Buka pustaka unduhan</span>
+                        <iconify-icon icon="solar:arrow-right-bold" class="text-xs"></iconify-icon>
+                    </div>
+                </a>
+
+                <div class="flex flex-col justify-between p-6 rounded-2xl border border-blackModern-borderLight dark:border-blackModern-border bg-blackModern-cardLight dark:bg-blackModern-card backdrop-blur-md text-left">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-white/10 dark:bg-white/10 border border-white/20 flex items-center justify-center text-zinc-900 dark:text-white shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                                <iconify-icon icon="solar:chat-square-call-bold" class="text-lg"></iconify-icon>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-zinc-900 dark:text-white">Saluran Bantuan 24/7</h2>
+                                <p class="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">/operasional_cskh</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg border border-blackModern-borderLight dark:border-zinc-800/80 bg-white/50 dark:bg-black/50 space-y-2">
+                            <div class="flex items-center justify-between text-[10px] pb-1 border-b border-zinc-200 dark:border-zinc-800">
+                                <span class="font-mono text-zinc-500 dark:text-zinc-400">Waktu Aktif Sistem</span>
+                                <div class="flex gap-0.5">
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm shadow-[0_0_5px_#10b981]"></span>
+                                    <span class="w-1 h-3 bg-emerald-500 rounded-sm opacity-80 shadow-[0_0_5px_#10b981]"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-zinc-800 dark:text-zinc-200">Tingkat Uptime</span>
+                                <span class="font-mono text-zinc-600 dark:text-zinc-400">99.98%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-zinc-800 dark:text-zinc-200">Latensi Inti</span>
+                                <span class="font-mono text-zinc-600 dark:text-zinc-400">ID: 8ms • SG: 18ms</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-6 text-[10px] font-semibold">
+                        <a href="https://t.me/AWIMEDAN0" target="_blank" class="px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-900 border border-blackModern-borderLight dark:border-blackModern-border hover:border-neonRed hover:bg-neonRed hover:text-white dark:hover:bg-neonRed dark:hover:border-neonRed dark:hover:text-white text-zinc-800 dark:text-zinc-300 transition-all shadow-[0_0_8px_rgba(255,0,51,0.1)]">Dukungan Telegram</a>
+                        <a href="https://youtube.com/awimedan" target="_blank" class="px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-900 border border-blackModern-borderLight dark:border-blackModern-border hover:border-neonRed hover:bg-neonRed hover:text-white dark:hover:bg-neonRed dark:hover:border-neonRed dark:hover:text-white text-zinc-800 dark:text-zinc-300 transition-all shadow-[0_0_8px_rgba(255,0,51,0.1)]">Saluran YouTube</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center items-center gap-8 sm:gap-12 text-zinc-500 dark:text-zinc-500 font-semibold text-xs select-none pt-4">
+                <div>
+                    <span class="text-zinc-900 dark:text-white font-extrabold block text-sm neon-text-white">5000+</span>
+                    Pelanggan
+                </div>
+                <div class="w-px h-5 bg-blackModern-borderLight dark:bg-blackModern-border"></div>
+                <div>
+                    <span class="text-zinc-900 dark:text-white font-extrabold block text-sm neon-text-white">99%</span>
+                    Kepuasan
+                </div>
+                <div class="w-px h-5 bg-blackModern-borderLight dark:bg-blackModern-border"></div>
+                <div>
+                    <span class="text-zinc-900 dark:text-white font-extrabold block text-sm neon-text-white">24/7</span>
+                    Dukungan
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="border-t border-blackModern-borderLight dark:border-blackModern-border bg-white dark:bg-blackModern-bg py-6 theme-transition relative z-10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-zinc-500 dark:text-zinc-500 font-medium">
+            <div class="flex items-center gap-4">
+                <span>© 2026 AWIMEDAN PANEL. Hak Cipta Dilindungi Undang-Undang.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>|</span>
+                <span class="text-neonRed neon-text-red font-bold">Semua Sistem Beroperasi</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const THEME_KEY = 'site-theme';
+        function getTheme() {
+            return localStorage.getItem(THEME_KEY) || 'dark';
+        }
+        function toggleTheme() {
+            const current = getTheme();
+            const next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, next);
+            applyTheme(next);
+        }
+        function applyTheme(theme) {
+            const isDark = theme === 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            updateThemeIcon(isDark);
+        }
+        function updateThemeIcon(isDark) {
+            const moon = document.getElementById('icon-moon');
+            const sun = document.getElementById('icon-sun');
+            if (moon && sun) {
+                moon.style.display = isDark ? '' : 'none';
+                sun.style.display = isDark ? 'none' : '';
+            }
+        }
+        
+        applyTheme(getTheme());
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === THEME_KEY) {
+                applyTheme(e.newValue);
+            }
+        });
+    </script>
+
+    <!-- Integrasi Auth melalui Cloudflare Worker -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // URL Cloudflare Worker Anda
+        const WORKER_URL = "https://keysistemlogin.angkawijaya2603.workers.dev/";
+
+        // Konfigurasi Firebase Client (Beserta API Key publik agar Firebase SDK bekerja)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNZokAKl6TVKWMOc51SCSRKZGqoG77uFI", 
+            authDomain: "cpmapikey.firebaseapp.com",
+            projectId: "cpmapikey",
+            storageBucket: "cpmapikey.firebasestorage.app",
+            messagingSenderId: "372965414639",
+            appId: "1:372965414639:web:e79bb42a252336cab52d1a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userProfile = document.getElementById('userProfile');
+        const userAvatar = document.getElementById('userAvatar');
+
+        loginBtn.addEventListener('click', async () => {
+            try {
+                // Ambil token Turnstile dari widget Cloudflare
+                let turnstileToken = turnstile.getResponse();
+
+                // Jika token belum siap, eksekusi Turnstile
+                if (!turnstileToken) {
+                    turnstileToken = await turnstile.execute('#turnstileWidget');
+                }
+
+                if (!turnstileToken) {
+                    alert("Verifikasi captcha gagal. Silakan coba lagi.");
+                    return;
+                }
+
+                // Jalankan validasi keamanan ke Cloudflare Worker
+                const workerCheck = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ turnstileToken })
+                });
+
+                if (workerCheck.ok) {
+                    // Jika Worker memberikan lampu hijau, buka login Google Firebase
+                    await signInWithPopup(auth, provider);
+                    turnstile.reset('#turnstileWidget');
+                } else {
+                    const errorData = await workerCheck.json().catch(() => ({}));
+                    alert("Verifikasi keamanan via Cloudflare Worker gagal: " + (errorData.message || "Token tidak valid"));
+                    turnstile.reset('#turnstileWidget');
+                }
+            } catch (error) {
+                console.error("Gagal Login:", error);
+                alert("Gagal masuk: " + error.message);
+                if (window.turnstile) turnstile.reset('#turnstileWidget');
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Gagal Logout:", error);
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginBtn.classList.add('hidden');
+                userProfile.classList.remove('hidden');
+                userAvatar.src = user.photoURL || 'https://via.placeholder.com/150';
+                userAvatar.title = user.displayName || 'Pengguna';
+            } else {
+                loginBtn.classList.remove('hidden');
+                userProfile.classList.add('hidden');
+                userAvatar.src = '';
+            }
+        });
+    </script>
+</body>
+</html>
